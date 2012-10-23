@@ -15,13 +15,7 @@ module Capistrano
           set(:latest_revision)   { capture("cd #{current_path}; git rev-parse --short HEAD").strip }
           set(:previous_revision) { capture("cd #{current_path}; git rev-parse --short HEAD@{1}").strip }
 
-          set :cleanup_targets, %w(log public/system tmp)
-          set :release_directories, %w(log tmp)
-          set :shared_symlinks, {
-            'system' => 'public/system',
-            'log' => 'log',
-            'pids' => 'tmp/pids'
-          }
+          set :mapped_shared_children, { } unless defined?(mapped_shared_children)
 
           namespace :deploy do
             def git_reset(ref)
@@ -63,6 +57,11 @@ module Capistrano
                   commands << "rm -rf #{latest_release}/#{d}"
                 end
                 commands << "ln -s #{shared_path}/#{d.split('/').last} #{latest_release}/#{d}"
+              end
+
+              mapped_shared_children.map do |src, dest|
+                commands << "rm -rf #{latest_release}/#{dest}"
+                commands << "ln -s #{shared_path}/#{src} #{latest_release}/#{dest}"
               end
 
               run commands.join(" && ")
