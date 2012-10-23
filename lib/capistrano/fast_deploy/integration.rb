@@ -20,9 +20,17 @@ module Capistrano
           namespace :deploy do
             def git_reset(ref)
               update_command = []
+
+              update_command << "cd #{deploy_to}"
+              # Fix up symlinked current folder
+              update_command << 'RELEASE=`readlink current`; if [ "$RELEASE" ]; then rm -rf current; mv "$RELEASE" "current"; fi'
+              # Git clone if it hasn't happened already
               update_command << "if [ ! -d \"#{current_path}/.git\" ]; then git clone -q #{repository} #{current_path}; fi"
+
               update_command << "cd #{current_path}"
+              # Fetch and reset
               update_command << ["git fetch -q origin && git reset --hard #{ref}"]
+              # Write the revision file
               update_command << "git rev-parse --verify HEAD > #{current_path}/REVISION"
               run update_command.join(' && ')
             end
@@ -42,6 +50,10 @@ module Capistrano
 
             desc "This is a no-op when fast_deploy is in use"
             task :create_symlink do
+            end
+
+            desc "This is a no-op when fast_deploy is in use"
+            task :cleanup do
             end
 
             task :finalize_update, :except => { :no_release => true } do

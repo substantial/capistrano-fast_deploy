@@ -26,6 +26,8 @@ set :mapped_shared_children, {
   Goes back to the previous place that `HEAD`
   was pointing (`HEAD@{1}`). You don't want to do this if you go and
   monkey around with your `current` folder manually.
+* `deploy:create_symlink` - This is now a no-op, there are no longer
+  individual release directories.
 
 ## Installation
 
@@ -48,6 +50,12 @@ Add the following to your deploy.rb:
 ```ruby
 require 'capistrano/fast_deploy'
 ```
+
+## Upgrading an existing project
+
+It should just work automatically. `deploy:update_code` will "unsymlink"
+your current directory. After that you can safely delete your releases
+folder if you like.
 
 ## Contributing
 
