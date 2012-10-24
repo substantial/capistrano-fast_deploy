@@ -9,7 +9,7 @@ A couple Capistrano tweaks to speed up deploys:
 
 This overrides the following default capistrano tasks:
 
-* `deploy:update_cod` - Uses `git reset` instead of the standard
+* `deploy:update_code` - Uses `git reset` instead of the standard
   `:scm` and `:deploy_via`providers.
 * `deploy:finalize_update` - Concatenates all symlink commands from
   `shared_children into a single ssh command. Also adds support for
