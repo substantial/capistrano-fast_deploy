@@ -1,4 +1,4 @@
-# Capistrano::FastDeploy
+# Capistrano Fast Deploy
 
 A couple Capistrano tweaks to speed up deploys:
 
